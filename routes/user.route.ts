@@ -1,9 +1,8 @@
 import express from "express";
-import { createUser } from "../controllers/user.controller.js";
+import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "../controllers/user.controller.js";
 
 export const router = express.Router();
 
-router.post("/", (req, res, next) => {
-  console.log("POST /api/v1/users route reached");
-  next();
-}, createUser);
+router.route('/').post(createUser).get(getAllUsers)
+
+router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser)
