@@ -1,8 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
@@ -39,7 +34,7 @@ model User {
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   courses     Course[]
-  enrolements Enrolement[]
+  enrollments Enrollment[]
   reviews     Review[]
 }
 
@@ -55,55 +50,75 @@ model Course {
   id           String       @id @default(uuid())
   title        String
   description  String
-  price        Float
+  price        Decimal      @db.Decimal(10, 2)
   level        Level
   isPublished  Boolean      @default(false)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
   instructorId String
   instructor   User         @relation(fields: [instructorId], references: [id])
-  categoryIds  String[]
-  category     Category     @relation(fields: [categoryIds], references: [id])
+  categoryId   String
+  category     Category     @relation(fields: [categoryId], references: [id])
   sections     Section[]
-  enrolements  Enrolement[]
+  enrollments  Enrollment[]
   reviews      Review[]
+
+  @@index([instructorId])
+  @@index([categoryId])
 }
 
 model Section {
-  id       String @id @default(uuid())
-  title    String
-  courseId String
-  course   Course @relation(fields: [courseId], references: [id])
+  id        String   @id @default(uuid())
+  title     String
+  order     Int
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons   Lesson[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  lessons Lesson[]
+  @@index([courseId])
 }
 
 model Lesson {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   title     String
   content   String
+  order     Int
   sectionId String
-  section   Section @relation(fields: [sectionId], references: [id])
+  section   Section  @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sectionId])
 }
 
-model Enrolement {
+model Enrollment {
   id         String   @id @default(uuid())
+  progress   Float    @default(0)
+  enrolledAt DateTime @default(now())
   userId     String
   user       User     @relation(fields: [userId], references: [id])
   courseId   String
   course     Course   @relation(fields: [courseId], references: [id])
-  progress   Float    @default(0)
-  enrolledAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([userId, courseId])
+  @@index([courseId])
 }
 
 model Review {
-  id       String  @id @default(uuid())
-  rating   Int
-  comment  String?
-  userId   String
-  user     User    @relation(fields: [userId], references: [id])
-  courseId String
-  course   Course  @relation(fields: [courseId], references: [id])
+  id        String   @id @default(uuid())
+  rating    Int
+  comment   String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([userId, courseId])
+  @@index([courseId])
 }
