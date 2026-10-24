@@ -3,14 +3,24 @@ import "dotenv/config";
 import express from "express";
 import { prisma } from "./prisma.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import cors from "cors";
+import { router as usersRoute } from "./routes/user.route.js";
 
 const app = express();
+app.use(cors());
+app.options("*all", cors());
 
 app.use(express.json());
+// routes
+app.use((req, res, next) => {
+  console.log(req.method, req.originalUrl);
+  next();
+});
 
-// Register your routes here, before the 404 handler.
-// Example:
-// app.use("/api/users", userRouter);
+app.get("/", (req, res, next) => {
+  res.send("test, route is mounted");
+});
+app.use('/api/v1/users',usersRoute)
 
 // 404 handler: must come after all routes.
 app.use((req, res) => {
