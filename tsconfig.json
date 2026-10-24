@@ -2,7 +2,7 @@
      "compilerOptions": {
        // File Layout
        "rootDir": ".",
-       "outDir": "./dist",
+      // "outDir": "./dist",
 
        // Environment Settings
        "module": "nodenext",

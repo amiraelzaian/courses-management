@@ -20,7 +20,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("test, route is mounted");
 });
-app.use('/api/v1/users',usersRoute)
+app.use('/api/v1/users/',usersRoute)
 
 // 404 handler: must come after all routes.
 app.use((req, res) => {

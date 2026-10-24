@@ -1,0 +1,1 @@
+{"watch":["."],"ignore":["node_modules","dist","generated","prisma/migrations"],"ext":"ts,json","exec":"tsx index.ts"}
