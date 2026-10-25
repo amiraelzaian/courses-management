@@ -5,6 +5,7 @@ import { prisma } from "./prisma.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import cors from "cors";
 import { router as usersRoute } from "./routes/user.route.js";
+import { router as categoryRoute } from "./routes/category.route.js";
 
 const app = express();
 app.use(cors());
@@ -20,7 +21,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("test, route is mounted");
 });
-app.use('/api/v1/users/',usersRoute)
+app.use('/api/v1/users/', usersRoute)
+app.use('/api/v1/categories/', categoryRoute)
 
 // 404 handler: must come after all routes.
 app.use((req, res) => {
