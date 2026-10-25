@@ -6,6 +6,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import cors from "cors";
 import { router as usersRoute } from "./routes/user.route.js";
 import { router as categoryRoute } from "./routes/category.route.js";
+import { router as courseRoute } from "./routes/course.route.js";
 
 const app = express();
 app.use(cors());
@@ -23,6 +24,7 @@ app.get("/", (req, res, next) => {
 });
 app.use('/api/v1/users/', usersRoute)
 app.use('/api/v1/categories/', categoryRoute)
+app.use('/api/v1/courses/', courseRoute)
 
 // 404 handler: must come after all routes.
 app.use((req, res) => {
