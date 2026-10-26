@@ -16,12 +16,14 @@ import {
 
 import { router as sectionRouter } from "./section.route.js";
 import { router as enrollment } from "./enrollment.route.js";
+import { router as review } from "./review.route.js";
 
 export const router = express.Router();
 
-// /api/v1/courses/:courseId/sections/...
+// /api/v1/courses/:courseId/route/...
 router.use("/:courseId/sections", sectionRouter);
 router.use("/:courseId/enrollments", enrollment);
+router.use("/:courseId/reviews", review);
 
 router
     .route("/")
