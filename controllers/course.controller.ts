@@ -1,7 +1,7 @@
 import { prisma } from "../prisma.js";
 import { ApiError } from "../utils/apiError.js";
 import type { Request, Response, NextFunction } from "express";
-import { CreateCourseInput } from "../validators/course.validator.js";
+import type { CreateCourseInput } from "../validators/course.validator.js";
 
 
 export const createCourse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {

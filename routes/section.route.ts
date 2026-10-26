@@ -1,11 +1,13 @@
 import express from "express";
 import { validate } from "../middlewares/validate.js";
+
 import {
     courseIdParamsSchema,
     sectionIdParamsSchema,
     createSectionSchema,
     updateSectionSchema,
 } from "../validators/section.validator.js";
+
 import {
     createSection,
     deleteSection,
@@ -14,7 +16,11 @@ import {
     updateSection,
 } from "../controllers/section.controller.js";
 
+import { router as lessonRouter } from "./lesson.route.js";
+
 export const router = express.Router({ mergeParams: true });
+
+router.use("/:sectionId/lessons", lessonRouter);
 
 router
     .route("/")
@@ -23,7 +29,10 @@ router
         validate(createSectionSchema),
         createSection
     )
-    .get(validate(courseIdParamsSchema, "params"), getAllSections);
+    .get(
+        validate(courseIdParamsSchema, "params"),
+        getAllSections
+    );
 
 router
     .route("/:id")
