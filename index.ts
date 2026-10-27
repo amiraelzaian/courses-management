@@ -7,6 +7,9 @@ import cors from "cors";
 import { router as usersRoute } from "./routes/user.route.js";
 import { router as categoryRoute } from "./routes/category.route.js";
 import { router as courseRoute } from "./routes/course.route.js";
+import { router as authRoute } from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
+
 
 const app = express();
 app.use(cors());
@@ -22,6 +25,8 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("test, route is mounted");
 });
+app.use(cookieParser());
+app.use("/api/v1/auth", authRoute);
 app.use('/api/v1/users/', usersRoute)
 app.use('/api/v1/categories/', categoryRoute)
 app.use('/api/v1/courses/', courseRoute)
