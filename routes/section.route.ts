@@ -17,6 +17,8 @@ import {
 } from "../controllers/section.controller.js";
 
 import { router as lessonRouter } from "./lesson.route.js";
+import { authenticate, authorize } from "../middlewares/auth.js";
+import { Role } from "../generated/prisma/enums.js";
 
 export const router = express.Router({ mergeParams: true });
 
@@ -24,7 +26,7 @@ router.use("/:sectionId/lessons", lessonRouter);
 
 router
     .route("/")
-    .post(
+    .post(authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR),
         validate(courseIdParamsSchema, "params"),
         validate(createSectionSchema),
         createSection
@@ -37,9 +39,10 @@ router
 router
     .route("/:id")
     .get(validate(sectionIdParamsSchema, "params"), getSection)
-    .patch(
+    .patch(authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR),
         validate(sectionIdParamsSchema, "params"),
         validate(updateSectionSchema),
         updateSection
     )
-    .delete(validate(sectionIdParamsSchema, "params"), deleteSection);
+    .delete(authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR),
+        validate(sectionIdParamsSchema, "params"), deleteSection);

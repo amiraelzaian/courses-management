@@ -17,6 +17,8 @@ import {
 import { router as sectionRouter } from "./section.route.js";
 import { router as enrollment } from "./enrollment.route.js";
 import { router as review } from "./review.route.js";
+import { authenticate, authorize } from "../middlewares/auth.js";
+import { Role } from "../generated/prisma/enums.js";
 
 export const router = express.Router();
 
@@ -27,15 +29,16 @@ router.use("/:courseId/reviews", review);
 
 router
     .route("/")
-    .post(validate(CreateCourseSchema), createCourse)
+    .post(authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR), validate(CreateCourseSchema), createCourse)
     .get(getAllCourses);
 
 router
     .route("/:id")
     .get(validate(courseIdParamSchema, "params"), getCourse)
     .patch(
+        authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR),
         validate(courseIdParamSchema, "params"),
         validate(updateCourseSchema),
         updateCourse
     )
-    .delete(validate(courseIdParamSchema, "params"), deleteCourse);
+    .delete(authenticate, authorize(Role.ADMIN, Role.INSTRUCTOR), validate(courseIdParamSchema, "params"), deleteCourse);
