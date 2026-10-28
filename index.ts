@@ -9,13 +9,40 @@ import { router as categoryRoute } from "./routes/category.route.js";
 import { router as courseRoute } from "./routes/course.route.js";
 import { router as authRoute } from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 
 
 const app = express();
+
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 
 app.use(express.json());
+app.use(cookieParser());
+
+// rate limmiter 
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 300,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+  message: { success: false, message: "Too many requests, try later" },
+})
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  standardHeaders: "draft-7",
+  legacyHeaders: false,
+  message: { success: false, message: "Too many login attempts, try again in 15 minutes" }
+})
+// as if i use server like (nginx, render,railway) must add this proxy before limitters or all users will be considered as one ip
+app.set("trust proxy", 1);
+
+app.use('/api', apiLimiter);
+app.use('/api/v1/auth/login', loginLimiter)
+
+
 // routes
 app.use((req, res, next) => {
   console.log(req.method, req.originalUrl);
@@ -25,7 +52,9 @@ app.use((req, res, next) => {
 app.get("/", (req, res, next) => {
   res.send("test, route is mounted");
 });
-app.use(cookieParser());
+
+
+
 app.use("/api/v1/auth", authRoute);
 app.use('/api/v1/users/', usersRoute)
 app.use('/api/v1/categories/', categoryRoute)

@@ -10,7 +10,6 @@ import {
 } from "../utils/tokens.js";
 import type { LoginInput } from "../validators/auth.validator.js";
 import type { Role } from "../generated/prisma/enums.js";
-import { success } from "zod";
 
 const REFRESH_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -38,6 +37,8 @@ const issueTokens = async (userId: string, role: Role, res: Response) => {
     res.cookie("refreshToken", refreshToken, cookieOptions);
     return accessToken
 }
+
+
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body as LoginInput;
 
